@@ -1,29 +1,82 @@
-function getUser(){
+function saveAuth(data){
 
-  const user =
-    localStorage.getItem(
-      STORAGE_USER
+  localStorage.setItem(
+    STORAGE_TOKEN,
+    data.token
+  );
+
+  localStorage.setItem(
+    STORAGE_USER,
+    JSON.stringify(
+      data.user
+    )
+  );
+
+  if(data.refresh_token){
+
+    localStorage.setItem(
+      STORAGE_REFRESH,
+      data.refresh_token
     );
 
-  return user
-    ? JSON.parse(user)
-    : null;
+  }
 
 }
 
-function isLoggedIn(){
+function getToken(){
 
-  return !!localStorage.getItem(
+  return localStorage.getItem(
     STORAGE_TOKEN
   );
 
 }
 
+function getUser(){
+
+  return JSON.parse(
+
+    localStorage.getItem(
+      STORAGE_USER
+    ) || '{}'
+
+  );
+
+}
+
+function isLoggedIn(){
+
+  return !!getToken();
+
+}
+
+function requireAuth(){
+
+  if(
+    !isLoggedIn()
+  ){
+
+    window.location.href =
+      'login.html';
+
+  }
+
+}
+
 function logout(){
 
-  localStorage.clear();
+  localStorage.removeItem(
+    STORAGE_TOKEN
+  );
 
-  location.href =
-    'index.html';
+  localStorage.removeItem(
+    STORAGE_USER
+  );
+
+  localStorage.removeItem(
+    STORAGE_REFRESH
+  );
+
+  window.location.href =
+    'login.html';
 
 }
