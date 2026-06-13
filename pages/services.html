@@ -31,20 +31,22 @@ href="../assets/css/app.css">
       <div class="flex justify-between items-center mb-6">
 
         <h1 class="text-3xl font-bold">
+
           Services
+
         </h1>
 
         <button
           onclick="openCreateModal()"
           class="bg-blue-600 text-white px-4 py-2 rounded">
 
-          Tambah Service
+          + Tambah Service
 
         </button>
 
       </div>
 
-      <div class="bg-white rounded shadow">
+      <div class="bg-white rounded shadow overflow-auto">
 
         <table class="w-full">
 
@@ -53,10 +55,12 @@ href="../assets/css/app.css">
             <tr class="bg-slate-200">
 
               <th class="p-3 text-left">ID</th>
+              <th class="p-3 text-left">Code</th>
               <th class="p-3 text-left">Nama</th>
-              <th class="p-3 text-left">Slug</th>
-              <th class="p-3 text-left">Harga Dasar</th>
-              <th class="p-3 text-left">Harga Admin</th>
+              <th class="p-3 text-left">Kategori</th>
+              <th class="p-3 text-left">Setup Fee</th>
+              <th class="p-3 text-left">Bulanan</th>
+              <th class="p-3 text-left">Tahunan</th>
               <th class="p-3 text-left">Status</th>
               <th class="p-3 text-left">Aksi</th>
 
@@ -68,7 +72,9 @@ href="../assets/css/app.css">
 
             <tr>
 
-              <td colspan="7" class="p-4 text-center">
+              <td
+                colspan="9"
+                class="text-center p-5">
 
                 Loading...
 
@@ -90,17 +96,17 @@ href="../assets/css/app.css">
 
 </div>
 
-<!-- Modal -->
+<!-- MODAL -->
 
 <div
 id="serviceModal"
-class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-  <div class="bg-white w-full max-w-lg rounded p-6">
+  <div class="bg-white w-full max-w-xl rounded-lg p-6">
 
     <h2
     id="modalTitle"
-    class="text-xl font-bold mb-4">
+    class="text-2xl font-bold mb-4">
 
       Tambah Service
 
@@ -113,35 +119,46 @@ class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
     <div class="space-y-3">
 
       <input
-      id="name"
-      placeholder="Nama Service"
-      class="w-full border p-2 rounded">
+        id="code"
+        class="w-full border p-2 rounded"
+        placeholder="Code">
 
       <input
-      id="slug"
-      placeholder="Slug"
-      class="w-full border p-2 rounded">
+        id="name"
+        class="w-full border p-2 rounded"
+        placeholder="Nama Service">
+
+      <input
+        id="category"
+        class="w-full border p-2 rounded"
+        placeholder="Kategori">
 
       <textarea
-      id="description"
-      placeholder="Deskripsi"
-      class="w-full border p-2 rounded"></textarea>
+        id="description"
+        class="w-full border p-2 rounded"
+        placeholder="Deskripsi"></textarea>
 
       <input
-      id="basePrice"
-      type="number"
-      placeholder="Harga Dasar"
-      class="w-full border p-2 rounded">
+        id="setupFee"
+        type="number"
+        class="w-full border p-2 rounded"
+        placeholder="Setup Fee">
 
       <input
-      id="adminPrice"
-      type="number"
-      placeholder="Harga Admin"
-      class="w-full border p-2 rounded">
+        id="monthlyPrice"
+        type="number"
+        class="w-full border p-2 rounded"
+        placeholder="Harga Bulanan">
+
+      <input
+        id="yearlyPrice"
+        type="number"
+        class="w-full border p-2 rounded"
+        placeholder="Harga Tahunan">
 
       <select
-      id="status"
-      class="w-full border p-2 rounded">
+        id="status"
+        class="w-full border p-2 rounded">
 
         <option value="active">
           Active
@@ -158,18 +175,18 @@ class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
     <div class="mt-5 flex gap-2">
 
       <button
-      onclick="saveService()"
-      class="bg-green-600 text-white px-4 py-2 rounded">
+        onclick="saveService()"
+        class="bg-green-600 text-white px-4 py-2 rounded">
 
-      Simpan
+        Simpan
 
       </button>
 
       <button
-      onclick="closeModal()"
-      class="bg-gray-500 text-white px-4 py-2 rounded">
+        onclick="closeModal()"
+        class="bg-gray-500 text-white px-4 py-2 rounded">
 
-      Batal
+        Batal
 
       </button>
 
