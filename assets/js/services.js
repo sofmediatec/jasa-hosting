@@ -15,10 +15,11 @@ async function loadServices(){
       'GET'
     );
 
-  if(!result.success){
+  if(!result || !result.success){
 
     alert(
-      result.message
+      result?.message ||
+      'Gagal memuat data'
     );
 
     return;
@@ -38,39 +39,38 @@ function renderServices(){
       'serviceTable'
     );
 
-  let html='';
+  let html = '';
 
   serviceData.forEach(item=>{
 
-    html +=
-    `
+    html += `
     <tr class="border-b">
 
+      <td class="p-3">${item.id}</td>
+
+      <td class="p-3">${item.code}</td>
+
+      <td class="p-3">${item.name}</td>
+
+      <td class="p-3">${item.category}</td>
+
       <td class="p-3">
-        ${item.id}
+        Rp ${Number(item.setup_fee || 0).toLocaleString()}
       </td>
 
       <td class="p-3">
-        ${item.name}
+        Rp ${Number(item.monthly_price || 0).toLocaleString()}
       </td>
 
       <td class="p-3">
-        ${item.slug}
-      </td>
-
-      <td class="p-3">
-        Rp ${Number(item.base_price).toLocaleString()}
-      </td>
-
-      <td class="p-3">
-        Rp ${Number(item.admin_price).toLocaleString()}
+        Rp ${Number(item.yearly_price || 0).toLocaleString()}
       </td>
 
       <td class="p-3">
         ${item.status}
       </td>
 
-      <td class="p-3">
+      <td class="p-3 flex gap-2">
 
         <button
           onclick="editService(${item.id})"
@@ -80,61 +80,68 @@ function renderServices(){
 
         </button>
 
+        <button
+          onclick="deleteServiceConfirm(${item.id})"
+          class="bg-red-600 text-white px-2 py-1 rounded">
+
+          Hapus
+
+        </button>
+
       </td>
 
     </tr>
     `;
+
   });
 
   if(serviceData.length===0){
 
-    html =
-    `
+    html = `
     <tr>
-      <td colspan="7" class="p-5 text-center">
+      <td colspan="9" class="text-center p-5">
         Tidak ada data
       </td>
     </tr>
     `;
   }
 
-  tbody.innerHTML =
-    html;
+  tbody.innerHTML = html;
 
 }
 
 function openCreateModal(){
 
-  document
-  .getElementById(
-    'serviceId'
-  )
-  .value='';
+  document.getElementById('serviceId').value='';
+  document.getElementById('code').value='';
+  document.getElementById('name').value='';
+  document.getElementById('category').value='';
+  document.getElementById('description').value='';
+  document.getElementById('setupFee').value='';
+  document.getElementById('monthlyPrice').value='';
+  document.getElementById('yearlyPrice').value='';
+  document.getElementById('status').value='active';
 
-  document
-  .getElementById(
+  document.getElementById(
     'modalTitle'
-  )
-  .innerText=
+  ).innerText =
   'Tambah Service';
 
-  document
-  .getElementById(
+  document.getElementById(
     'serviceModal'
-  )
-  .classList
-  .remove('hidden');
+  ).classList.remove(
+    'hidden'
+  );
 
 }
 
 function closeModal(){
 
-  document
-  .getElementById(
+  document.getElementById(
     'serviceModal'
-  )
-  .classList
-  .add('hidden');
+  ).classList.add(
+    'hidden'
+  );
 
 }
 
@@ -150,26 +157,25 @@ function editService(id){
   }
 
   document.getElementById('serviceId').value=item.id;
+  document.getElementById('code').value=item.code;
   document.getElementById('name').value=item.name;
-  document.getElementById('slug').value=item.slug;
+  document.getElementById('category').value=item.category;
   document.getElementById('description').value=item.description;
-  document.getElementById('basePrice').value=item.base_price;
-  document.getElementById('adminPrice').value=item.admin_price;
+  document.getElementById('setupFee').value=item.setup_fee;
+  document.getElementById('monthlyPrice').value=item.monthly_price;
+  document.getElementById('yearlyPrice').value=item.yearly_price;
   document.getElementById('status').value=item.status;
 
-  document
-  .getElementById(
+  document.getElementById(
     'modalTitle'
-  )
-  .innerText=
+  ).innerText =
   'Edit Service';
 
-  document
-  .getElementById(
+  document.getElementById(
     'serviceModal'
-  )
-  .classList
-  .remove('hidden');
+  ).classList.remove(
+    'hidden'
+  );
 
 }
 
@@ -184,35 +190,42 @@ async function saveService(){
 
     id:id,
 
+    code:
+      document.getElementById('code').value,
+
     name:
       document.getElementById('name').value,
 
-    slug:
-      document.getElementById('slug').value,
+    category:
+      document.getElementById('category').value,
 
     description:
       document.getElementById('description').value,
 
-    base_price:
-      document.getElementById('basePrice').value,
+    setup_fee:
+      Number(
+        document.getElementById('setupFee').value
+      ),
 
-    admin_price:
-      document.getElementById('adminPrice').value,
+    monthly_price:
+      Number(
+        document.getElementById('monthlyPrice').value
+      ),
+
+    yearly_price:
+      Number(
+        document.getElementById('yearlyPrice').value
+      ),
 
     status:
       document.getElementById('status').value
 
   };
 
-  let action =
-    'create_service';
-
-  if(id){
-
-    action =
-      'update_service';
-
-  }
+  const action =
+    id
+    ? 'update_service'
+    : 'create_service';
 
   const result =
     await apiRequest(
@@ -230,10 +243,45 @@ async function saveService(){
   }
 
   alert(
-    'Data berhasil disimpan'
+    'Service berhasil disimpan'
   );
 
   closeModal();
+
+  loadServices();
+
+}
+
+async function deleteServiceConfirm(id){
+
+  if(
+    !confirm(
+      'Yakin ingin menghapus service ini?'
+    )
+  ){
+    return;
+  }
+
+  const result =
+    await apiRequest(
+      'delete_service',
+      {
+        id:id
+      }
+    );
+
+  if(!result.success){
+
+    alert(
+      result.message
+    );
+
+    return;
+  }
+
+  alert(
+    'Service berhasil dihapus'
+  );
 
   loadServices();
 
