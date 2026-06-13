@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Login</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body
+class="bg-gray-100">
+
+<div
+class="max-w-md mx-auto mt-20 bg-white p-6 rounded">
+
+<h1
+class="text-2xl font-bold mb-4">
+
+Login
+
+</h1>
+
+<input
+id="email"
+placeholder="Email"
+class="border p-2 w-full mb-3">
+
+<input
+id="password"
+type="password"
+placeholder="Password"
+class="border p-2 w-full mb-3">
+
+<button
+onclick="login()"
+class="bg-blue-600 text-white px-4 py-2">
+
+Login
+
+</button>
+
+</div>
+
+<script src="../assets/js/config.js"></script>
+
+<script>
+
+async function login(){
+
+  const result =
+  await fetch(
+    API_URL,
+    {
+      method:'POST',
+
+      headers:{
+        'Content-Type':
+        'text/plain'
+      },
+
+      body:JSON.stringify({
+
+        action:'login',
+
+        email:
+        document.getElementById(
+          'email'
+        ).value,
+
+        password:
+        document.getElementById(
+          'password'
+        ).value
+
+      })
+    }
+  );
+
+  const json =
+    await result.json();
+
+  if(!json.success){
+
+    alert(
+      json.message
+    );
+
+    return;
+  }
+
+  localStorage.setItem(
+    STORAGE_TOKEN,
+    json.data.token
+  );
+
+  localStorage.setItem(
+    STORAGE_REFRESH,
+    json.data.refresh_token
+  );
+
+  localStorage.setItem(
+    STORAGE_USER,
+    JSON.stringify(
+      json.data.user
+    )
+  );
+
+  location.href =
+    'dashboard.html';
+
+}
+
+</script>
+
+</body>
+</html>
