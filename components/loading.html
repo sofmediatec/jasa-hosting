@@ -1,12 +1,93 @@
-<div
-id="loadingOverlay"
-class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+async function apiRequest(
+  action,
+  payload = {},
+  method = 'POST'
+){
 
-<div
-class="bg-white p-4 rounded shadow">
+  try{
 
-Loading...
+    showLoading();
 
-</div>
+    const token =
+      localStorage.getItem(
+        STORAGE_TOKEN
+      );
 
-</div>
+    let response;
+
+    if(method === 'GET'){
+
+      const params =
+        new URLSearchParams({
+
+          action,
+
+          token,
+
+          ...payload
+
+        });
+
+      response =
+        await fetch(
+          `${API_URL}?${params}`
+        );
+
+    }else{
+
+      response =
+        await fetch(
+          API_URL,
+          {
+
+            method:'POST',
+
+            headers:{
+              'Content-Type':
+              'text/plain'
+            },
+
+            body:
+            JSON.stringify({
+
+              action,
+
+              token,
+
+              ...payload
+
+            })
+
+          }
+
+        );
+
+    }
+
+    const result =
+      await response.json();
+
+    hideLoading();
+
+    return result;
+
+  }catch(err){
+
+    hideLoading();
+
+    console.error(
+      err
+    );
+
+    return {
+
+      success:false,
+
+      message:
+      'Server tidak dapat dihubungi'
+
+    };
+
+  }
+
+}
